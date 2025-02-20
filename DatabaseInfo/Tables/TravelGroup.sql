@@ -4,7 +4,7 @@
   Serve para: Classificar ou organizar as viagens em grupos
 */
 CREATE TABLE TravelGroup (
-    groupId INTEGER PRIMARY KEY,           -- Identificador único do grupo
+    groupId INTEGER PRIMARY KEY AUTOINCREMENT,           -- Identificador único do grupo
     groupType VARCHAR(20),                 -- Tipo de grupo (ex: "Mensal", "Única")
     startDate DATETIME,                        -- Data de início (para grupo mensal)
     endDate DATETIME,                          -- Data de fim (para grupo mensal, pode ser nula para grupo único)

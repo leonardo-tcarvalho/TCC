@@ -4,7 +4,7 @@
   Serve para: Armazenar os detalhes da viagem (motorista, veículo, horários etc.)
 */
 CREATE TABLE Travel (
-    travelId INTEGER PRIMARY KEY,           -- Identificador único da viagem
+    travelId INTEGER PRIMARY KEY AUTOINCREMENT,           -- Identificador único da viagem
     groupId INTEGER,                        -- Identificador do grupo (relacionamento com a tabela TravelGroup)
     userId INTEGER,                         -- Identificador do motorista (relacionamento com a tabela UserProfile)
     vehicleId INTEGER,                      -- Identificador do veículo (relacionamento com a tabela UserVehicle)

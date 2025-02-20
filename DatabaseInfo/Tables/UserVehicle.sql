@@ -4,7 +4,7 @@
   Serve para: Armazena as informações do veículo do usuário
 */
 CREATE TABLE UserVehicle (
-    vehicleId INTEGER PRIMARY KEY,     -- Identificador único do veículo
+    vehicleId INTEGER PRIMARY KEY AUTOINCREMENT,     -- Identificador único do veículo
     userId INTEGER,                    -- Identificador do usuário (chave estrangeira)
     make VARCHAR(100),                 -- Marca do veículo
     model VARCHAR(100),                -- Modelo do veículo

@@ -4,7 +4,7 @@
   Serve para: Armazena as informações do usuário
 */
 CREATE TABLE UserProfile (
-    userId INTEGER PRIMARY KEY,        -- Identificador único do usuário
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,        -- Identificador único do usuário
     userType VARCHAR(20),              -- Tipo de usuário (ex: motorista, passageiro)
     firstName VARCHAR(100) NOT NULL,   -- Primeiro nome do usuário
     lastName VARCHAR(100),             -- Sobrenome do usuário

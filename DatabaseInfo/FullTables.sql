@@ -4,7 +4,7 @@
   Serve para: Armazena as informações do usuário
 */
 CREATE TABLE UserProfile (
-    userId INTEGER PRIMARY KEY,        -- Identificador único do usuário
+    userId INTEGER PRIMARY KEY AUTOINCREMENT,        -- Identificador único do usuário
     userType VARCHAR(20),              -- Tipo de usuário (ex: motorista, passageiro)
     firstName VARCHAR(100) NOT NULL,   -- Primeiro nome do usuário
     lastName VARCHAR(100),             -- Sobrenome do usuário
@@ -25,7 +25,7 @@ CREATE TABLE UserProfile (
   Serve para: Armazena os endereços do usuário
 */
 CREATE TABLE UserAddress (
-    addressId INTEGER PRIMARY KEY,    -- Identificador único do endereço
+    addressId INTEGER PRIMARY KEY AUTOINCREMENT,    -- Identificador único do endereço
     userId INTEGER,                   -- Identificador do usuário (chave estrangeira)
     address VARCHAR(255),              -- Endereço do usuário
     city VARCHAR(100),                 -- Cidade do endereço
@@ -40,7 +40,7 @@ CREATE TABLE UserAddress (
   Serve para: Armazena as informações do veículo do usuário
 */
 CREATE TABLE UserVehicle (
-    vehicleId INTEGER PRIMARY KEY,     -- Identificador único do veículo
+    vehicleId INTEGER PRIMARY KEY AUTOINCREMENT,     -- Identificador único do veículo
     userId INTEGER,                    -- Identificador do usuário (chave estrangeira)
     make VARCHAR(100),                 -- Marca do veículo
     model VARCHAR(100),                -- Modelo do veículo
@@ -57,7 +57,7 @@ CREATE TABLE UserVehicle (
   Serve para: Classificar ou organizar as viagens em grupos
 */
 CREATE TABLE TravelGroup (
-    groupId INTEGER PRIMARY KEY,           -- Identificador único do grupo
+    groupId INTEGER PRIMARY KEY AUTOINCREMENT,           -- Identificador único do grupo
     groupType VARCHAR(20),                 -- Tipo de grupo (ex: "Mensal", "Única")
     startDate DATETIME,                        -- Data de início (para grupo mensal)
     endDate DATETIME,                          -- Data de fim (para grupo mensal, pode ser nula para grupo único)
@@ -74,7 +74,7 @@ CREATE TABLE TravelGroup (
   Serve para: Registrar passageiros em cada grupo de viagem
 */
 CREATE TABLE PassengerGroup (
-    passengerGroupId INTEGER PRIMARY KEY,   -- Identificador único da participação
+    passengerGroupId INTEGER PRIMARY KEY AUTOINCREMENT,   -- Identificador único da participação
     groupId INTEGER,                        -- Identificador do grupo (relacionamento com a tabela TravelGroup)
     userId INTEGER,                         -- Identificador do usuário (passageiro)
     status VARCHAR(20),                     -- Status do passageiro no grupo (ex: "confirmado", "pendente")
@@ -89,7 +89,7 @@ CREATE TABLE PassengerGroup (
   Serve para: Armazenar os detalhes da viagem (motorista, veículo, horários etc.)
 */
 CREATE TABLE Travel (
-    travelId INTEGER PRIMARY KEY,           -- Identificador único da viagem
+    travelId INTEGER PRIMARY KEY AUTOINCREMENT,           -- Identificador único da viagem
     groupId INTEGER,                        -- Identificador do grupo (relacionamento com a tabela TravelGroup)
     userId INTEGER,                         -- Identificador do motorista (relacionamento com a tabela UserProfile)
     vehicleId INTEGER,                      -- Identificador do veículo (relacionamento com a tabela UserVehicle)

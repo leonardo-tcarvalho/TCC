@@ -4,7 +4,7 @@
   Serve para: Registrar passageiros em cada grupo de viagem
 */
 CREATE TABLE PassengerGroup (
-    passengerGroupId INTEGER PRIMARY KEY,   -- Identificador único da participação
+    passengerGroupId INTEGER PRIMARY KEY AUTOINCREMENT,   -- Identificador único da participação
     groupId INTEGER,                        -- Identificador do grupo (relacionamento com a tabela TravelGroup)
     userId INTEGER,                         -- Identificador do usuário (passageiro)
     status VARCHAR(20),                     -- Status do passageiro no grupo (ex: "confirmado", "pendente")

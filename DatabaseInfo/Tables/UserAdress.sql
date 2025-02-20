@@ -4,7 +4,7 @@
   Serve para: Armazena os endereços do usuário
 */
 CREATE TABLE UserAddress (
-    addressId INTEGER PRIMARY KEY,    -- Identificador único do endereço
+    addressId INTEGER PRIMARY KEY AUTOINCREMENT,    -- Identificador único do endereço
     userId INTEGER,                   -- Identificador do usuário (chave estrangeira)
     address VARCHAR(255),              -- Endereço do usuário
     city VARCHAR(100),                 -- Cidade do endereço
