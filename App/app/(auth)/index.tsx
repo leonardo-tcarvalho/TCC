@@ -1,4 +1,5 @@
 import InputBasic from "@/components/InputBasic";
+import { useState } from "react";
 import {
   StatusBar,
   StyleSheet,
@@ -10,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthLoginScreen() {
+  const [fodase, setFodase] = useState("s");
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
@@ -21,12 +23,16 @@ export default function AuthLoginScreen() {
             placeholderText="Enter your email..."
             typeInput="email"
             iconName="user"
+            onChangeText={setFodase}
+            value={"2"}
           />
           <InputBasic
             labelText="Password"
             placeholderText="Enter your password..."
             typeInput="password"
             iconName="lock"
+            onChangeText={setFodase}
+            value={"2"}
           />
           <TouchableOpacity style={styles.button}>
             <Text>Sign in</Text>

@@ -12,6 +12,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function AuthLoginScreen() {
   const [step, setStep] = useState(1);
 
+  // Estados para os campos do formulário
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [userType, setUserType] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
@@ -25,18 +35,24 @@ export default function AuthLoginScreen() {
                 placeholderText="Enter your first name..."
                 typeInput="default"
                 iconName="user"
+                value={firstName}
+                onChangeText={setFirstName}
               />
               <InputBasic
                 labelText="Last Name"
                 placeholderText="Enter your last name..."
                 typeInput="default"
                 iconName="user"
+                value={lastName}
+                onChangeText={setLastName}
               />
               <InputBasic
                 labelText="Email"
                 placeholderText="Enter your email..."
                 typeInput="email"
                 iconName="envelope"
+                value={email}
+                onChangeText={setEmail}
               />
             </View>
             <TouchableOpacity
@@ -55,18 +71,24 @@ export default function AuthLoginScreen() {
                 placeholderText="Enter your user type..."
                 typeInput="default"
                 iconName="bars"
+                value={userType}
+                onChangeText={setUserType}
               />
               <InputBasic
                 labelText="Phone Number"
-                placeholderText="Enter your first name..."
-                typeInput="numeric"
-                iconName="user"
+                placeholderText="Enter your phone number..."
+                typeInput="default"
+                iconName="phone"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
               />
               <InputBasic
-                labelText="Birth Date "
-                placeholderText="Enter your last name..."
+                labelText="Birth Date"
+                placeholderText="Enter your birth date..."
                 typeInput="default"
-                iconName="user"
+                iconName="calendar"
+                value={birthDate}
+                onChangeText={setBirthDate}
               />
             </View>
             <View style={styles.containerButton}>
@@ -91,14 +113,18 @@ export default function AuthLoginScreen() {
               <InputBasic
                 labelText="Password"
                 placeholderText="Enter your password..."
-                typeInput="default"
+                typeInput="password"
                 iconName="lock"
+                value={password}
+                onChangeText={setPassword}
               />
               <InputBasic
                 labelText="Confirm Password"
-                placeholderText="Enter your password..."
-                typeInput="numeric"
+                placeholderText="Confirm your password..."
+                typeInput="password"
                 iconName="lock"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
               />
             </View>
             <View style={styles.containerButton}>
@@ -109,12 +135,12 @@ export default function AuthLoginScreen() {
                 <Text>Back</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.buttonConfirm}>
-                <Text>Register</Text>
+                <Text style={{ color: "#FFFFFF" }}>Register</Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : (
-          "not-found"
+          <Text style={{ color: "white" }}>Not Found</Text>
         )}
       </View>
     </SafeAreaView>

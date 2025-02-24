@@ -9,13 +9,14 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: "#ffffff",
         tabBarInactiveTintColor: "#505057",
+        tabBarShowLabel: false,
         tabBarStyle: {
+          paddingTop: 5,
           backgroundColor: "#27272a",
           borderColor: "#18181b",
           borderTopWidth: 1,
           elevation: 50, // Sombra no Android
           shadowOpacity: 0.9, // Sombra no iOS
-          height: 60,
         },
       }}
     >

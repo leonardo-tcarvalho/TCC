@@ -1,11 +1,20 @@
-import { StyleSheet, View, TextInput, Text } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome"; // Importando o ícone
+import { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+} from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 interface InputBasicProps {
   labelText: string;
   typeInput: string;
   placeholderText: string;
-  iconName: string; // Nome do ícone
+  iconName: string;
+  onChangeText: (text: string) => void;
+  value: string;
 }
 
 export default function InputBasic({
@@ -13,7 +22,10 @@ export default function InputBasic({
   typeInput,
   placeholderText,
   iconName,
+  onChangeText,
+  value,
 }: InputBasicProps) {
+  const [shownPassword, setShownPassword] = useState(true);
   return (
     <View style={styles.containerInput}>
       <Text style={styles.labelInput}>{labelText}</Text>
@@ -23,7 +35,7 @@ export default function InputBasic({
           style={styles.input}
           placeholder={placeholderText}
           placeholderTextColor="#7e7e7e"
-          secureTextEntry={typeInput === "password"}
+          secureTextEntry={typeInput === "password" ? shownPassword : false}
           keyboardType={
             typeInput === "email"
               ? "email-address"
@@ -31,7 +43,21 @@ export default function InputBasic({
               ? "numeric"
               : "default"
           }
+          onChangeText={onChangeText}
+          value={value}
         />
+        {typeInput.toLowerCase() === "password" && (
+          <TouchableOpacity
+            onPress={() => setShownPassword(!shownPassword)}
+            style={styles.eyeIcon}
+          >
+            <Icon
+              name={shownPassword ? "eye-slash" : "eye"}
+              size={20}
+              color="#7e7e7e"
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -62,5 +88,8 @@ const styles = StyleSheet.create({
   },
   icon: {
     marginRight: 10,
+  },
+  eyeIcon: {
+    padding: 10,
   },
 });
