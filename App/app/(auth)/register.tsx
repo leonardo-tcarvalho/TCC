@@ -1,4 +1,5 @@
 import InputBasic from "@/components/InputBasic";
+import ModalAlert from "@/components/ModalAlert";
 import { useState } from "react";
 import {
   StatusBar,
@@ -21,6 +22,12 @@ export default function AuthLoginScreen() {
   const [birthDate, setBirthDate] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // ModalAlert
+  const [modalVisible, setModalVisible] = useState(true);
+  const [modalMessage, setModalMessage] = useState(
+    "mensaaosidjisajoasjdiosajdoasjdoiasdjasiojdasoijdsajdoi"
+  );
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -56,7 +63,7 @@ export default function AuthLoginScreen() {
               />
             </View>
             <TouchableOpacity
-              onPress={() => setStep(2)}
+              onPress={() => setModalVisible(!modalVisible)}
               style={styles.buttonDefault}
             >
               <Text>Next</Text>
@@ -143,6 +150,12 @@ export default function AuthLoginScreen() {
           <Text style={{ color: "white" }}>Not Found</Text>
         )}
       </View>
+      <ModalAlert
+        modalMessage={modalMessage}
+        visible={modalVisible}
+        onClose={() => setModalVisible(!modalVisible)}
+        typeMessage={"success"}
+      />
     </SafeAreaView>
   );
 }

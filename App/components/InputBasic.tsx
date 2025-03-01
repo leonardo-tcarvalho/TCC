@@ -1,3 +1,4 @@
+import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -6,7 +7,6 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
 
 interface InputBasicProps {
   labelText: string;
