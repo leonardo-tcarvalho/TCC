@@ -7,10 +7,11 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import InputValidation from "@/components/InputValidation";
 
 interface InputBasicProps {
   labelText: string;
-  typeInput: string;
+  typeInput: "default" | "email" | "phone" | "date" | "password";
   placeholderText: string;
   iconName: string;
   onChangeText: (text: string) => void;
@@ -25,28 +26,44 @@ export default function InputBasic({
   onChangeText,
   value,
 }: InputBasicProps) {
+  const [errorMessage, setErrorMessage] = useState("");
   const [shownPassword, setShownPassword] = useState(true);
+
+  const validateInput = (text: string) => {
+    let isValid = true;
+    if (
+      typeInput === "email" ||
+      typeInput === "phone" ||
+      typeInput === "date"
+    ) {
+      isValid = InputValidation({ typeInput, valueInput: text });
+    }
+
+    setErrorMessage(isValid ? "" : "Invalid format");
+    onChangeText(text);
+  };
+
   return (
     <View style={styles.containerInput}>
       <Text style={styles.labelInput}>{labelText}</Text>
       <View style={styles.inputContainer}>
         <Icon name={iconName} size={20} color="#7e7e7e" style={styles.icon} />
         <TextInput
-          style={styles.input}
+          style={[styles.input, errorMessage ? styles.inputError : null]}
           placeholder={placeholderText}
           placeholderTextColor="#7e7e7e"
           secureTextEntry={typeInput === "password" ? shownPassword : false}
           keyboardType={
             typeInput === "email"
               ? "email-address"
-              : typeInput === "numeric"
-              ? "numeric"
+              : typeInput === "phone"
+              ? "phone-pad"
               : "default"
           }
-          onChangeText={onChangeText}
+          onChangeText={validateInput}
           value={value}
         />
-        {typeInput.toLowerCase() === "password" && (
+        {typeInput === "password" && (
           <TouchableOpacity
             onPress={() => setShownPassword(!shownPassword)}
             style={styles.eyeIcon}
@@ -59,6 +76,9 @@ export default function InputBasic({
           </TouchableOpacity>
         )}
       </View>
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
     </View>
   );
 }
@@ -86,10 +106,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
   },
+  inputError: {
+    borderColor: "red",
+    borderWidth: 1,
+  },
   icon: {
     marginRight: 10,
   },
   eyeIcon: {
     padding: 10,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginTop: 5,
   },
 });
