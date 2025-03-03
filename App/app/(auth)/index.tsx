@@ -11,7 +11,9 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthLoginScreen() {
-  const [fodase, setFodase] = useState("s");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
@@ -23,16 +25,16 @@ export default function AuthLoginScreen() {
             placeholderText="Enter your email..."
             typeInput="email"
             iconName="user"
-            onChangeText={setFodase}
-            value={"2"}
+            onChangeText={setEmail}
+            value={email}
           />
           <InputBasic
             labelText="Password"
             placeholderText="Enter your password..."
             typeInput="password"
             iconName="lock"
-            onChangeText={setFodase}
-            value={"2"}
+            onChangeText={setPassword}
+            value={password}
           />
           <TouchableOpacity style={styles.button}>
             <Text>Sign in</Text>
