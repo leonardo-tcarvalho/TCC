@@ -1,6 +1,7 @@
 import InputBasic from "@/components/InputBasic";
 import ModalAlert from "@/components/ModalAlert";
 import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import {
   StatusBar,
   Text,
@@ -8,12 +9,14 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import InputValidation from "@/components/InputValidation";
 
 export default function AuthLoginScreen() {
   const [step, setStep] = useState(1);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
-  // Estados para os campos do formulário
+  // Estados dos campos do formulário
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,11 +26,43 @@ export default function AuthLoginScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // ModalAlert
-  const [modalVisible, setModalVisible] = useState(true);
-  const [modalMessage, setModalMessage] = useState(
-    "mensaaosidjisajoasjdiosajdoasjdoiasdjasiojdasoijdsajdoi"
-  );
+  const handleNextStep = () => {
+    let error = "";
+
+    if (step === 1) {
+      if (!firstName || !lastName || !email) {
+        error = "All fields are required.";
+      } else if (!InputValidation({ typeInput: "email", valueInput: email })) {
+        error = "Invalid email format.";
+      }
+    } else if (step === 2) {
+      if (!userType || !phoneNumber || !birthDate) {
+        error = "All fields are required.";
+      } else if (
+        !InputValidation({ typeInput: "phone", valueInput: phoneNumber })
+      ) {
+        error = "Invalid phone number format.";
+      } else if (
+        !InputValidation({ typeInput: "date", valueInput: birthDate })
+      ) {
+        error = "Invalid date format.";
+      }
+    } else if (step === 3) {
+      if (!password || !confirmPassword) {
+        error = "All fields are required.";
+      } else if (password !== confirmPassword) {
+        error = "Passwords do not match.";
+      }
+    }
+
+    if (error) {
+      setModalMessage(error);
+      setModalVisible(true);
+      return;
+    }
+
+    setStep(step + 1);
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -63,7 +98,7 @@ export default function AuthLoginScreen() {
               />
             </View>
             <TouchableOpacity
-              onPress={() => setModalVisible(!modalVisible)}
+              onPress={handleNextStep}
               style={styles.buttonDefault}
             >
               <Text>Next</Text>
@@ -106,7 +141,7 @@ export default function AuthLoginScreen() {
                 <Text>Back</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setStep(3)}
+                onPress={handleNextStep}
                 style={styles.buttonNext}
               >
                 <Text>Next</Text>
@@ -154,7 +189,7 @@ export default function AuthLoginScreen() {
         modalMessage={modalMessage}
         visible={modalVisible}
         onClose={() => setModalVisible(!modalVisible)}
-        typeMessage={"success"}
+        typeMessage={"error"}
       />
     </SafeAreaView>
   );
