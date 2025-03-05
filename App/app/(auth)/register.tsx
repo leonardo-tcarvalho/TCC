@@ -25,9 +25,11 @@ export default function AuthLoginScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isValidPhone = (phone) => /^\(\d{2}\) \d{5}-\d{4}$/.test(phone);
-  const isValidDate = (date: String) =>
+  const isValidEmail = (email: string): boolean =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone: string): boolean =>
+    /^\(\d{2}\) \d{5}-\d{4}$/.test(phone);
+  const isValidDate = (date: string): boolean =>
     /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/.test(date);
 
   const handleNextStep = () => {
