@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function TabLayout() {
   return (
