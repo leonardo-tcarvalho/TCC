@@ -1,7 +1,7 @@
 import InputBasic from "@/components/InputBasic";
 import ModalAlert from "@/components/ModalAlert";
 import { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "react-native";
 import {
   StatusBar,
   Text,
@@ -9,7 +9,6 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import InputValidation from "@/components/InputValidation";
 
 export default function AuthLoginScreen() {
   const [step, setStep] = useState(1);
@@ -26,25 +25,26 @@ export default function AuthLoginScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isValidPhone = (phone) => /^\(\d{2}\) \d{5}-\d{4}$/.test(phone);
+  const isValidDate = (date: String) =>
+    /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/.test(date);
+
   const handleNextStep = () => {
     let error = "";
 
     if (step === 1) {
       if (!firstName || !lastName || !email) {
         error = "All fields are required.";
-      } else if (!InputValidation({ typeInput: "email", valueInput: email })) {
+      } else if (!isValidEmail(email)) {
         error = "Invalid email format.";
       }
     } else if (step === 2) {
       if (!userType || !phoneNumber || !birthDate) {
         error = "All fields are required.";
-      } else if (
-        !InputValidation({ typeInput: "phone", valueInput: phoneNumber })
-      ) {
+      } else if (!isValidPhone(phoneNumber)) {
         error = "Invalid phone number format.";
-      } else if (
-        !InputValidation({ typeInput: "date", valueInput: birthDate })
-      ) {
+      } else if (!isValidDate(birthDate)) {
         error = "Invalid date format.";
       }
     } else if (step === 3) {
@@ -67,124 +67,133 @@ export default function AuthLoginScreen() {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
-      <View style={styles.container}>
-        {step === 1 ? (
-          <View style={styles.containerLogin}>
-            <View style={styles.containerInput}>
-              <Text style={styles.textTitle}>Register</Text>
-              <InputBasic
-                labelText="First Name"
-                placeholderText="Enter your first name..."
-                typeInput="default"
-                iconName="user"
-                value={firstName}
-                onChangeText={setFirstName}
-              />
-              <InputBasic
-                labelText="Last Name"
-                placeholderText="Enter your last name..."
-                typeInput="default"
-                iconName="user"
-                value={lastName}
-                onChangeText={setLastName}
-              />
-              <InputBasic
-                labelText="Email"
-                placeholderText="Enter your email..."
-                typeInput="email"
-                iconName="envelope"
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-            <TouchableOpacity
-              onPress={handleNextStep}
-              style={styles.buttonDefault}
-            >
-              <Text>Next</Text>
-            </TouchableOpacity>
-          </View>
-        ) : step === 2 ? (
-          <View style={styles.containerLogin}>
-            <View style={styles.containerInput}>
-              <Text style={styles.textTitle}>Register</Text>
-              <InputBasic
-                labelText="Type User"
-                placeholderText="Enter your user type..."
-                typeInput="default"
-                iconName="bars"
-                value={userType}
-                onChangeText={setUserType}
-              />
-              <InputBasic
-                labelText="Phone Number"
-                placeholderText="Enter your phone number..."
-                typeInput="default"
-                iconName="phone"
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-              />
-              <InputBasic
-                labelText="Birth Date"
-                placeholderText="Enter your birth date..."
-                typeInput="default"
-                iconName="calendar"
-                value={birthDate}
-                onChangeText={setBirthDate}
-              />
-            </View>
-            <View style={styles.containerButton}>
-              <TouchableOpacity
-                onPress={() => setStep(1)}
-                style={styles.buttonBack}
-              >
-                <Text>Back</Text>
-              </TouchableOpacity>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+        keyboardVerticalOffset={80}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+          keyboardShouldPersistTaps="handled"
+        >
+          {step === 1 ? (
+            <View style={styles.containerLogin}>
+              <View style={styles.containerInput}>
+                <Text style={styles.textTitle}>Register</Text>
+                <InputBasic
+                  labelText="First Name"
+                  placeholderText="Enter your first name..."
+                  typeInput="default"
+                  iconName="user"
+                  value={firstName}
+                  onChangeText={setFirstName}
+                />
+                <InputBasic
+                  labelText="Last Name"
+                  placeholderText="Enter your last name..."
+                  typeInput="default"
+                  iconName="user"
+                  value={lastName}
+                  onChangeText={setLastName}
+                />
+                <InputBasic
+                  labelText="Email"
+                  placeholderText="Enter your email..."
+                  typeInput="email"
+                  iconName="envelope"
+                  value={email}
+                  onChangeText={setEmail}
+                />
+              </View>
               <TouchableOpacity
                 onPress={handleNextStep}
-                style={styles.buttonNext}
+                style={styles.buttonDefault}
               >
                 <Text>Next</Text>
               </TouchableOpacity>
             </View>
-          </View>
-        ) : step === 3 ? (
-          <View style={styles.containerLogin}>
-            <View style={styles.containerInput}>
-              <Text style={styles.textTitle}>Register</Text>
-              <InputBasic
-                labelText="Password"
-                placeholderText="Enter your password..."
-                typeInput="password"
-                iconName="lock"
-                value={password}
-                onChangeText={setPassword}
-              />
-              <InputBasic
-                labelText="Confirm Password"
-                placeholderText="Confirm your password..."
-                typeInput="password"
-                iconName="lock"
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-              />
+          ) : step === 2 ? (
+            <View style={styles.containerLogin}>
+              <View style={styles.containerInput}>
+                <Text style={styles.textTitle}>Register</Text>
+                <InputBasic
+                  labelText="Type User"
+                  placeholderText="Enter your user type..."
+                  typeInput="default"
+                  iconName="bars"
+                  value={userType}
+                  onChangeText={setUserType}
+                />
+                <InputBasic
+                  labelText="Phone Number"
+                  placeholderText="Enter your phone number..."
+                  typeInput="phone"
+                  iconName="phone"
+                  value={phoneNumber}
+                  onChangeText={setPhoneNumber}
+                />
+                <InputBasic
+                  labelText="Birth Date"
+                  placeholderText="Enter your birth date..."
+                  typeInput="date"
+                  iconName="calendar"
+                  value={birthDate}
+                  onChangeText={setBirthDate}
+                />
+              </View>
+              <View style={styles.containerButton}>
+                <TouchableOpacity
+                  onPress={() => setStep(1)}
+                  style={styles.buttonBack}
+                >
+                  <Text>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={handleNextStep}
+                  style={styles.buttonNext}
+                >
+                  <Text>Next</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={styles.containerButton}>
-              <TouchableOpacity
-                onPress={() => setStep(2)}
-                style={styles.buttonBack}
-              >
-                <Text>Back</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.buttonConfirm}>
-                <Text style={{ color: "#FFFFFF" }}>Register</Text>
-              </TouchableOpacity>
+          ) : step === 3 ? (
+            <View style={styles.containerLogin}>
+              <View style={styles.containerInput}>
+                <Text style={styles.textTitle}>Register</Text>
+                <InputBasic
+                  labelText="Password"
+                  placeholderText="Enter your password..."
+                  typeInput="password"
+                  iconName="lock"
+                  value={password}
+                  onChangeText={setPassword}
+                />
+                <InputBasic
+                  labelText="Confirm Password"
+                  placeholderText="Confirm your password..."
+                  typeInput="password"
+                  iconName="lock"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                />
+              </View>
+              <View style={styles.containerButton}>
+                <TouchableOpacity
+                  onPress={() => setStep(2)}
+                  style={styles.buttonBack}
+                >
+                  <Text>Back</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonConfirm}>
+                  <Text style={{ color: "#FFFFFF" }}>Register</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        ) : (
-          <Text style={{ color: "white" }}>Not Found</Text>
-        )}
-      </View>
+          ) : (
+            <Text style={{ color: "white" }}>Not Found</Text>
+          )}
+        </ScrollView>
+      </KeyboardAvoidingView>
       <ModalAlert
         modalMessage={modalMessage}
         visible={modalVisible}
@@ -201,11 +210,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    gap: 25,
-    padding: 20,
+    backgroundColor: "#18181b",
+  },
+  scrollView: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#18181b",
+    padding: 20,
   },
   containerLogin: {
     width: "100%",

@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import { View } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 export default function TabLayout() {
@@ -8,15 +9,24 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: "#ffffff",
-        tabBarInactiveTintColor: "#505057",
+        tabBarInactiveTintColor: "#333333",
         tabBarShowLabel: false,
         tabBarStyle: {
-          paddingTop: 5,
+          position: "absolute",
+          width: "80%", // Largura reduzida para não ocupar toda a tela
+          height: 60, // Altura do menu
+          bottom: 20, // Distância do rodapé para dar o efeito flutuante]
+          transform: [{ translateX: "10%" }], // Centraliza o menu
+          borderRadius: 25,
           backgroundColor: "#27272a",
-          borderColor: "#18181b",
-          borderTopWidth: 1,
+          borderColor: "#27272a",
           elevation: 50, // Sombra no Android
           shadowOpacity: 0.9, // Sombra no iOS
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 5 },
+        },
+        tabBarIconStyle: {
+          height: "100%",
         },
       }}
     >
@@ -25,7 +35,14 @@ export default function TabLayout() {
         options={{
           title: "Login",
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="login" color={color} size={size} />
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <MaterialCommunityIcons name="login" color={color} size={size} />
+            </View>
           ),
         }}
       />

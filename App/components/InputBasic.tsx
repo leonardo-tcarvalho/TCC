@@ -1,3 +1,4 @@
+// InputBasic.tsx
 import Icon from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import {
@@ -7,7 +8,6 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
-import InputValidation from "@/components/InputValidation";
 
 interface InputBasicProps {
   labelText: string;
@@ -26,21 +26,36 @@ export default function InputBasic({
   onChangeText,
   value,
 }: InputBasicProps) {
-  const [errorMessage, setErrorMessage] = useState("");
   const [shownPassword, setShownPassword] = useState(true);
 
-  const validateInput = (text: string) => {
-    let isValid = true;
-    if (
-      typeInput === "email" ||
-      typeInput === "phone" ||
-      typeInput === "date"
-    ) {
-      isValid = InputValidation({ typeInput, valueInput: text });
+  const formatInput = (text: string) => {
+    let formattedText = text;
+
+    if (typeInput === "phone") {
+      formattedText = text
+        .replace(/\D/g, "")
+        .replace(/^(\d{2})(\d)/g, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2")
+        .slice(0, 15);
+
+      const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
+      if (!phoneRegex.test(formattedText) && formattedText.length === 15)
+        return;
+    } else if (typeInput === "date") {
+      formattedText = text
+        .replace(/\D/g, "")
+        .replace(/(\d{2})(\d)/, "$1/$2")
+        .replace(/(\d{2})(\d)/, "$1/$2")
+        .slice(0, 10);
+
+      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/;
+      if (!dateRegex.test(formattedText) && formattedText.length === 10) return;
+    } else if (typeInput === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(text) && text.length > 5) return;
     }
 
-    setErrorMessage(isValid ? "" : "Invalid format");
-    onChangeText(text);
+    onChangeText(formattedText);
   };
 
   return (
@@ -49,7 +64,7 @@ export default function InputBasic({
       <View style={styles.inputContainer}>
         <Icon name={iconName} size={20} color="#7e7e7e" style={styles.icon} />
         <TextInput
-          style={[styles.input, errorMessage ? styles.inputError : null]}
+          style={[styles.input]}
           placeholder={placeholderText}
           placeholderTextColor="#7e7e7e"
           secureTextEntry={typeInput === "password" ? shownPassword : false}
@@ -58,9 +73,11 @@ export default function InputBasic({
               ? "email-address"
               : typeInput === "phone"
               ? "phone-pad"
+              : typeInput === "date"
+              ? "numeric"
               : "default"
           }
-          onChangeText={validateInput}
+          onChangeText={formatInput}
           value={value}
         />
         {typeInput === "password" && (
@@ -76,9 +93,6 @@ export default function InputBasic({
           </TouchableOpacity>
         )}
       </View>
-      {errorMessage ? (
-        <Text style={styles.errorText}>{errorMessage}</Text>
-      ) : null}
     </View>
   );
 }
@@ -106,19 +120,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
   },
-  inputError: {
-    borderColor: "red",
-    borderWidth: 1,
-  },
   icon: {
     marginRight: 10,
   },
   eyeIcon: {
     padding: 10,
-  },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginTop: 5,
   },
 });
