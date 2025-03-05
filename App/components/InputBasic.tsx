@@ -1,5 +1,5 @@
 // InputBasic.tsx
-import Icon from "react-native-vector-icons/FontAwesome";
+import { FontAwesome } from "react-native-vector-icons";
 import { useState } from "react";
 import {
   StyleSheet,
@@ -62,7 +62,12 @@ export default function InputBasic({
     <View style={styles.containerInput}>
       <Text style={styles.labelInput}>{labelText}</Text>
       <View style={styles.inputContainer}>
-        <Icon name={iconName} size={20} color="#7e7e7e" style={styles.icon} />
+        <FontAwesome
+          name={iconName}
+          size={20}
+          color="#7e7e7e"
+          style={styles.icon}
+        />
         <TextInput
           style={[styles.input]}
           placeholder={placeholderText}
@@ -85,7 +90,7 @@ export default function InputBasic({
             onPress={() => setShownPassword(!shownPassword)}
             style={styles.eyeIcon}
           >
-            <Icon
+            <FontAwesome
               name={shownPassword ? "eye-slash" : "eye"}
               size={20}
               color="#7e7e7e"
