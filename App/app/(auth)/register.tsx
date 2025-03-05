@@ -70,7 +70,7 @@ export default function AuthLoginScreen() {
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
       <KeyboardAvoidingView
-        style={styles.container}
+        style={styles.containerKeyboard}
         behavior="padding"
         keyboardVerticalOffset={80}
       >
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
   },
-  container: {
+  containerKeyboard: {
     flex: 1,
     backgroundColor: "#18181b",
   },

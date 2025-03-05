@@ -1,10 +1,10 @@
 import InputBasic from "@/components/InputBasic";
 import { useState } from "react";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
 import {
   StatusBar,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -17,33 +17,42 @@ export default function AuthLoginScreen() {
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <StatusBar backgroundColor="#18181b" />
-      <View style={styles.container}>
-        <View style={styles.containerLogin}>
-          <Text style={styles.textTitle}>Welcome</Text>
-          <InputBasic
-            labelText="Email"
-            placeholderText="Enter your email..."
-            typeInput="email"
-            iconName="user"
-            onChangeText={setEmail}
-            value={email}
-          />
-          <InputBasic
-            labelText="Password"
-            placeholderText="Enter your password..."
-            typeInput="password"
-            iconName="lock"
-            onChangeText={setPassword}
-            value={password}
-          />
-          <TouchableOpacity style={styles.button}>
-            <Text>Sign in</Text>
+      <KeyboardAvoidingView
+        style={styles.containerKeyboard}
+        behavior="padding"
+        keyboardVerticalOffset={80}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollView}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.containerLogin}>
+            <Text style={styles.textTitle}>Welcome</Text>
+            <InputBasic
+              labelText="Email"
+              placeholderText="Enter your email..."
+              typeInput="email"
+              iconName="user"
+              onChangeText={setEmail}
+              value={email}
+            />
+            <InputBasic
+              labelText="Password"
+              placeholderText="Enter your password..."
+              typeInput="password"
+              iconName="lock"
+              onChangeText={setPassword}
+              value={password}
+            />
+            <TouchableOpacity style={styles.button}>
+              <Text>Sign in</Text>
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity>
+            <Text style={styles.textForgotPassword}>Forgot your password?</Text>
           </TouchableOpacity>
-        </View>
-        <TouchableOpacity>
-          <Text style={styles.textForgotPassword}>Forgot your password?</Text>
-        </TouchableOpacity>
-      </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -52,17 +61,20 @@ const styles = StyleSheet.create({
   safeAreaView: {
     flex: 1,
   },
-  container: {
+  containerKeyboard: {
     flex: 1,
-    gap: 25,
-    padding: 20,
+    backgroundColor: "#18181b",
+  },
+  scrollView: {
+    flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#18181b",
+    padding: 20,
+    gap: 20,
   },
   containerLogin: {
     width: "100%",
-    paddingVertical: 15,
+    paddingVertical: 35,
     paddingHorizontal: 15,
     gap: 20,
     backgroundColor: "#27272a",
