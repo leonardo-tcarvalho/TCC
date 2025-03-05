@@ -1,6 +1,5 @@
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import IconFeather from "react-native-vector-icons/Feather";
-import IconAntDesign from "react-native-vector-icons/AntDesign";
+import { Feather, AntDesign } from "react-native-vector-icons";
 
 interface ModalAlertProps {
   modalMessage: string;
@@ -26,10 +25,10 @@ export default function ModalAlert({
         <View style={styles.modalBox}>
           <View style={styles.closeBox}>
             <TouchableOpacity onPress={onClose}>
-              <IconFeather name="x" size={40} color="#7e7e7e" />
+              <Feather name="x" size={40} color="#7e7e7e" />
             </TouchableOpacity>
           </View>
-          <IconAntDesign
+          <AntDesign
             name={
               typeMessage === "error"
                 ? "exclamationcircleo"
