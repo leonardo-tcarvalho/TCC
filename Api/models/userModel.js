@@ -38,7 +38,6 @@ async function createUser({ firstName, lastName, email, userType, phone, birthDa
             .input('password', sql.NVarChar, password)
             .query(query);
     } catch (error) {
-        console.error('Error creating user:', error); // Adicionar log
         throw error;
     }
 }
@@ -55,7 +54,6 @@ async function findUserByEmail(email) {
             `);
         return result.recordset[0];
     } catch (error) {
-        console.error('Error finding user by email:', error); // Adicionar log
         throw error;
     }
 }
