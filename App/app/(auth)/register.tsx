@@ -1,3 +1,4 @@
+import axios from "axios";
 import InputBasic from "@/components/InputBasic";
 import ModalAlert from "@/components/ModalAlert";
 import { useState } from "react";
@@ -11,11 +12,15 @@ import {
 } from "react-native";
 
 export default function AuthLoginScreen() {
+  // Passos do registro
   const [step, setStep] = useState(1);
+
+  // Modal
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [typeMessage, setTypeMessage] = useState("");
 
-  // Estados dos campos do formulário
+  // Dados do usuário
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +30,7 @@ export default function AuthLoginScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  // Funções de validação
   const isValidEmail = (email: string): boolean =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const isValidPhone = (phone: string): boolean =>
@@ -32,6 +38,7 @@ export default function AuthLoginScreen() {
   const isValidDate = (date: string): boolean =>
     /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/.test(date);
 
+  // Função para avançar para o próximo passo
   const handleNextStep = () => {
     let error = "";
 
@@ -64,6 +71,47 @@ export default function AuthLoginScreen() {
     }
 
     setStep(step + 1);
+  };
+
+  // Função de registro
+  const handleRegister = async () => {
+    let error = "";
+
+    if (password !== confirmPassword) {
+      error = "Passwords do not match.";
+      setModalMessage(error);
+      setModalVisible(true);
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://192.168.15.4:5000/api/users/register",
+        {
+          firstName,
+          lastName,
+          email,
+          userType,
+          phone: phoneNumber,
+          birthDate,
+          password,
+        }
+      );
+
+      if (response.status === 201) {
+        setModalMessage("Registration successful!");
+        setTypeMessage("success");
+        setModalVisible(true);
+        setStep(1); // Redireciona para o primeiro passo ou tela de login
+      }
+    } catch (error: any) {
+      console.error("Registration error:", error); // Adicione este log para depuração
+      setTypeMessage("error");
+      setModalMessage(
+        error.response?.data?.message || "Error during registration."
+      );
+      setModalVisible(true);
+    }
   };
 
   return (
@@ -186,7 +234,10 @@ export default function AuthLoginScreen() {
                 >
                   <Text>Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonConfirm}>
+                <TouchableOpacity
+                  onPress={handleRegister}
+                  style={styles.buttonConfirm}
+                >
                   <Text style={{ color: "#FFFFFF" }}>Register</Text>
                 </TouchableOpacity>
               </View>
@@ -200,7 +251,7 @@ export default function AuthLoginScreen() {
         modalMessage={modalMessage}
         visible={modalVisible}
         onClose={() => setModalVisible(!modalVisible)}
-        typeMessage={"error"}
+        typeMessage={typeMessage}
       />
     </SafeAreaView>
   );
