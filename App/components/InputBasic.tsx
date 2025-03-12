@@ -52,7 +52,6 @@ export default function InputBasic({
       if (!dateRegex.test(formattedText) && formattedText.length === 10) return;
     } else if (typeInput === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(text) && text.length > 5) return;
     }
 
     onChangeText(formattedText);
