@@ -12,7 +12,6 @@ const dbConfig = {
     },
 };
 
-// Conectar ao banco de dados
 const connectDB = async () => {
     try {
         await sql.connect(dbConfig);
