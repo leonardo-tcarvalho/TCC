@@ -1,4 +1,6 @@
 import InputBasic from "@/components/InputBasic";
+import ModalAlert from "@/components/ModalAlert";
+import api from "@/services/api";
 import { useState } from "react";
 import { KeyboardAvoidingView, ScrollView } from "react-native";
 import {
@@ -11,8 +13,46 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthLoginScreen() {
+  //
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  // Modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [typeMessage, setTypeMessage] = useState("");
+
+  const handleLogin = async () => {
+    let error = "";
+
+    try {
+      const response = await api.post("/users/login", {
+        email,
+        password,
+      });
+      if (response.status === 200) {
+        setModalMessage("Login successful!");
+        setTypeMessage("success");
+        setModalVisible(true);
+      }
+    } catch (error: any) {
+      console.error("Login error:", error);
+      setTypeMessage("error");
+      setModalMessage(error.response?.data?.message || "Error during login.");
+      setModalVisible(true);
+    }
+
+    if (modalVisible) {
+      return (
+        <ModalAlert
+          modalMessage={modalMessage}
+          visible={modalVisible}
+          onClose={() => setModalVisible(!modalVisible)}
+          typeMessage={typeMessage}
+        />
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -44,7 +84,7 @@ export default function AuthLoginScreen() {
               onChangeText={setPassword}
               value={password}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity onPress={handleLogin} style={styles.button}>
               <Text>Sign in</Text>
             </TouchableOpacity>
           </View>
