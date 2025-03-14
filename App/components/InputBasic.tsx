@@ -1,5 +1,5 @@
 // InputBasic.tsx
-import { FontAwesome } from "react-native-vector-icons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import {
   StyleSheet,
