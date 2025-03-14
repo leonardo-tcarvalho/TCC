@@ -2,7 +2,7 @@ const sql = require('mssql');
 
 async function createUser({ firstName, lastName, email, userType, phone, birthDate, password }) {
     try {
-        const newPhone = phone.replace(/\D/g, '');
+        // const newPhone = phone.replace(/\D/g, '');
         const newBirthDate = new Date(birthDate).toISOString().split('T')[0];
 
         const query = `
@@ -33,7 +33,7 @@ async function createUser({ firstName, lastName, email, userType, phone, birthDa
             .input('lastName', sql.NVarChar, lastName)
             .input('email', sql.NVarChar, email)
             .input('userType', sql.NVarChar, userType)
-            .input('phone', sql.NVarChar, newPhone)
+            .input('phone', sql.NVarChar, phone)
             .input('birthDate', sql.Date, newBirthDate)
             .input('password', sql.NVarChar, password)
             .query(query);
