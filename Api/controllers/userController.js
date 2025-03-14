@@ -1,8 +1,8 @@
 const { createUser, findUserByEmail } = require('../models/userModel');
-const bcrypt = require('bcrypt');
+const { hashPassword, comparePassword } = require('../utils/hash')
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seuSegredoSuperSeguro';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 async function register(req, res) {
     try {
@@ -13,7 +13,7 @@ async function register(req, res) {
             return res.status(400).json({ message: 'E-mail já cadastrado' });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await hashPassword(password, 10);
 
         await createUser({ firstName, lastName, email, userType, phone, birthDate, password: hashedPassword });
 
@@ -33,7 +33,7 @@ async function login(req, res) {
             return res.status(400).json({ message: 'E-mail ou senha inválidos' });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'E-mail ou senha inválidos' });
         }
