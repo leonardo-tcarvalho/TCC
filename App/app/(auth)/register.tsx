@@ -1,6 +1,6 @@
-import axios from "axios";
 import InputBasic from "@/components/InputBasic";
 import ModalAlert from "@/components/ModalAlert";
+import api from "@/services/api";
 import { useState } from "react";
 import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "react-native";
 import {
@@ -25,7 +25,7 @@ export default function AuthLoginScreen() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [userType, setUserType] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,9 +49,9 @@ export default function AuthLoginScreen() {
         error = "Invalid email format.";
       }
     } else if (step === 2) {
-      if (!userType || !phoneNumber || !birthDate) {
+      if (!userType || !phone || !birthDate) {
         error = "All fields are required.";
-      } else if (!isValidPhone(phoneNumber)) {
+      } else if (!isValidPhone(phone)) {
         error = "Invalid phone number format.";
       } else if (!isValidDate(birthDate)) {
         error = "Invalid date format.";
@@ -85,18 +85,15 @@ export default function AuthLoginScreen() {
     }
 
     try {
-      const response = await axios.post(
-        "http://192.168.15.4:5000/api/users/register",
-        {
-          firstName,
-          lastName,
-          email,
-          userType,
-          phone: phoneNumber,
-          birthDate,
-          password,
-        }
-      );
+      const response = await api.post("/users/register", {
+        firstName,
+        lastName,
+        email,
+        userType,
+        phone,
+        birthDate,
+        password,
+      });
 
       if (response.status === 201) {
         setModalMessage("Registration successful!");
@@ -179,8 +176,8 @@ export default function AuthLoginScreen() {
                   placeholderText="Enter your phone number..."
                   typeInput="phone"
                   iconName="phone"
-                  value={phoneNumber}
-                  onChangeText={setPhoneNumber}
+                  value={phone}
+                  onChangeText={setPhone}
                 />
                 <InputBasic
                   labelText="Birth Date"
