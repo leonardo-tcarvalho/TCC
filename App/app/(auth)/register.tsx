@@ -18,6 +18,7 @@ import {
 } from "@/validations/registerSchema";
 import { ModalAlert, InputBasic } from "@/components";
 import { ZodType } from "zod";
+import api from "@/services/api";
 
 const registerSteps: ZodType<any>[] = [
   registerStepOne,
@@ -26,16 +27,9 @@ const registerSteps: ZodType<any>[] = [
 ];
 
 export default function AuthRegisterScreen() {
-  // Passos do registro
   const [step, setStep] = useState(1);
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-    trigger,
-    getValues,
-  } = useForm({
+  const { control, handleSubmit, trigger } = useForm({
     resolver: zodResolver(registerSteps[step - 1]),
     defaultValues: {
       firstName: "",
@@ -57,7 +51,22 @@ export default function AuthRegisterScreen() {
     }
   };
 
-  const onSubmit = (data: any) => console.log("Dados Finais:", data);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
+
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await api.post("/users/login", data);
+      setModalMessage("Success");
+      setModalType("success");
+      setModalVisible(true);
+    } catch (error) {
+      setModalMessage("Error");
+      setModalType("error");
+      setModalVisible(true);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -274,6 +283,12 @@ export default function AuthRegisterScreen() {
           )}
         </ScrollView>
       </KeyboardAvoidingView>
+      <ModalAlert
+        modalMessage={modalMessage}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        typeMessage={modalType}
+      />
     </SafeAreaView>
   );
 }
