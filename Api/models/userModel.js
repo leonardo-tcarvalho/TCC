@@ -2,8 +2,6 @@ const sql = require('mssql');
 
 async function createUser({ firstName, lastName, email, userType, phone, birthDate, password }) {
     try {
-        const newBirthDate = new Date(birthDate).toISOString().split('T')[0];
-
         const query = `
             INSERT INTO UserProfile (
                 firstName, 
@@ -33,7 +31,7 @@ async function createUser({ firstName, lastName, email, userType, phone, birthDa
             .input('email', sql.NVarChar, email)
             .input('userType', sql.NVarChar, userType)
             .input('phone', sql.NVarChar, phone)
-            .input('birthDate', sql.Date, newBirthDate)
+            .input('birthDate', sql.Date, birthDate)
             .input('password', sql.NVarChar, password)
             .query(query);
     } catch (error) {
