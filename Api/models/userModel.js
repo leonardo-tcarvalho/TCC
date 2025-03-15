@@ -2,7 +2,6 @@ const sql = require('mssql');
 
 async function createUser({ firstName, lastName, email, userType, phone, birthDate, password }) {
     try {
-        // const newPhone = phone.replace(/\D/g, '');
         const newBirthDate = new Date(birthDate).toISOString().split('T')[0];
 
         const query = `

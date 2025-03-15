@@ -1,5 +1,5 @@
 const { createUser, findUserByEmail, findUserData } = require('../models/userModel');
-const { hashPassword, comparePassword } = require('../utils/hash')
+const { hashPassword, comparePassword } = require('../utils/hash');
 const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -22,7 +22,6 @@ async function register(req, res) {
         res.status(500).json({ message: 'Erro ao registrar usuário', error: error.message });
     }
 }
-
 
 async function login(req, res) {
     try {
@@ -48,11 +47,15 @@ async function login(req, res) {
 
 async function getMe(req, res) {
     try {
-        const { userId } = req.body;
+        const { userId } = req.user;
+
         const user = await findUserData(userId);
-        res.json({ userId: user.userId });
-    }
-    catch (error) {
+        if (!user) {
+            return res.status(400).json({ message: 'Usuario não encontrado' });
+        }
+
+        res.json({ userId: userId, name: user.firstName + " " + user.lastName, email: user.email });
+    } catch (error) {
         res.status(500).json({ message: 'Erro ao buscar usuário', error });
     }
 }
