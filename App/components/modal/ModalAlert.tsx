@@ -39,7 +39,7 @@ export default function ModalAlert({
                 ? "exclamationcircleo"
                 : "infocirlceo"
             }
-            size={130}
+            size={65}
             color={
               typeMessage === "error"
                 ? "#ef4444"
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)", // Fundo escuro semi-transparente
   },
   modalBox: {
-    width: "80%",
+    width: "60%",
     padding: 5,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
