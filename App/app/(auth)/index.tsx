@@ -13,7 +13,9 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { InputBasic, ModalAlert } from "@/components";
 import { loginSchema } from "@/validations/loginSchema";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { AuthContext } from "@/contexts/AuthContext";
+import { useRouter } from "expo-router";
 
 export default function AuthLoginScreen() {
   const { control, handleSubmit, trigger } = useForm({
@@ -29,14 +31,24 @@ export default function AuthLoginScreen() {
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
 
+  const authContext = useContext(AuthContext);
+  if (!authContext) {
+    return null;
+  }
+
+  const { login } = authContext;
+  const router = useRouter();
+
   const onSubmit = async (data: any) => {
     try {
       const response = await api.post("/users/login", data);
       setModalMessage("Autenticado!");
       setModalType("success");
       setModalVisible(true);
+      await login(response.data.token);
       setTimeout(() => {
         setModalVisible(false);
+        router.push("/(tabs)");
       }, 1000);
     } catch (error) {
       setModalMessage("Usuário ou senha inválidos!");
