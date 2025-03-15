@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { TextInputMask } from "react-native-masked-text";
 
 interface InputBasicProps {
   labelText: string;
@@ -47,22 +48,45 @@ export default function InputBasic({
           style={styles.icon}
         />
 
-        <TextInput
-          style={styles.input}
-          placeholder={placeholderText}
-          placeholderTextColor="#7e7e7e"
-          secureTextEntry={typeInput === "password" ? shownPassword : false}
-          keyboardType={
-            typeInput === "email"
-              ? "email-address"
-              : typeInput === "phone" || typeInput === "date"
-              ? "numeric"
-              : "default"
-          }
-          onChangeText={onChangeText}
-          onBlur={onBlur}
-          value={value}
-        />
+        {typeInput === "phone" || typeInput === "date" ? (
+          <TextInputMask
+            type={
+              typeInput === "phone"
+                ? "cel-phone"
+                : typeInput === "date"
+                ? "datetime"
+                : "custom"
+            }
+            options={
+              typeInput === "phone"
+                ? {
+                    maskType: "BRL",
+                    withDDD: true,
+                    dddMask: "(99) ",
+                  }
+                : {
+                    format: "DD/MM/YYYY",
+                  }
+            }
+            style={styles.input}
+            placeholder={placeholderText}
+            placeholderTextColor="#7e7e7e"
+            value={value}
+            onChangeText={onChangeText}
+            onBlur={onBlur}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            placeholder={placeholderText}
+            placeholderTextColor="#7e7e7e"
+            secureTextEntry={typeInput === "password" ? shownPassword : false}
+            keyboardType={typeInput === "email" ? "email-address" : "default"}
+            onChangeText={onChangeText}
+            onBlur={onBlur}
+            value={value}
+          />
+        )}
 
         {typeInput === "password" && (
           <TouchableOpacity
