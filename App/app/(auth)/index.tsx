@@ -10,10 +10,14 @@ import {
   View,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { InputBasic, ModalAlert } from "@/components";
+import { loginSchema } from "@/validations/loginSchema";
+import React, { useState } from "react";
 
 export default function AuthLoginScreen() {
   const { control, handleSubmit, trigger } = useForm({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -21,7 +25,22 @@ export default function AuthLoginScreen() {
     mode: "onBlur",
   });
 
-  const onSubmit = (data: any) => console.log("Dados Finais:", data);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalType, setModalType] = useState("");
+
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await api.post("/users/login", data);
+      setModalMessage("Success");
+      setModalType("success");
+      setModalVisible(true);
+    } catch (error) {
+      setModalMessage("Error");
+      setModalType("error");
+      setModalVisible(true);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -79,7 +98,10 @@ export default function AuthLoginScreen() {
                 );
               }}
             />
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+              onPress={handleSubmit(onSubmit)}
+              style={styles.button}
+            >
               <Text>Sign in</Text>
             </TouchableOpacity>
           </View>
@@ -88,6 +110,12 @@ export default function AuthLoginScreen() {
           </TouchableOpacity>
         </ScrollView>
       </KeyboardAvoidingView>
+      <ModalAlert
+        modalMessage={modalMessage}
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        typeMessage={modalType}
+      />
     </SafeAreaView>
   );
 }
