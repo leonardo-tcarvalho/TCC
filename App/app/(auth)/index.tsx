@@ -32,13 +32,19 @@ export default function AuthLoginScreen() {
   const onSubmit = async (data: any) => {
     try {
       const response = await api.post("/users/login", data);
-      setModalMessage("Success");
+      setModalMessage("Autenticado!");
       setModalType("success");
       setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 1000);
     } catch (error) {
-      setModalMessage("Error");
+      setModalMessage("Usuário ou senha inválidos!");
       setModalType("error");
       setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
     }
   };
 

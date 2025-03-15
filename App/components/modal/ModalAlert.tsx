@@ -1,6 +1,5 @@
 import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import Feather from "react-native-vector-icons/Feather";
 
 interface ModalAlertProps {
   modalMessage: string;
@@ -24,11 +23,6 @@ export default function ModalAlert({
     >
       <View style={styles.container}>
         <View style={styles.modalBox}>
-          <View style={styles.closeBox}>
-            <TouchableOpacity onPress={onClose}>
-              <Feather name="x" size={40} color="#7e7e7e" />
-            </TouchableOpacity>
-          </View>
           <AntDesign
             name={
               typeMessage === "error"
@@ -66,30 +60,14 @@ const styles = StyleSheet.create({
   },
   modalBox: {
     width: "60%",
-    padding: 5,
+    padding: 40,
     backgroundColor: "#FFFFFF",
     borderRadius: 10,
+    gap: 20,
     alignItems: "center",
   },
   modalText: {
-    padding: 20,
     fontSize: 18,
-    marginBottom: 15,
     textAlign: "center",
-  },
-  closeButton: {
-    marginTop: 10,
-    backgroundColor: "#18181b",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-  closeBox: {
-    width: "100%",
-    alignItems: "flex-end",
   },
 });
