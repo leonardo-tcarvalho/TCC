@@ -1,115 +1,63 @@
-import InputBasic from "@/components/InputBasic";
-import ModalAlert from "@/components/ModalAlert";
-import api from "@/services/api";
 import { useState } from "react";
-import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "react-native";
 import {
   StatusBar,
   Text,
   TouchableOpacity,
   StyleSheet,
   View,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  registerStepOne,
+  registerStepTwo,
+  registerStepThree,
+} from "@/validations/registerSchema";
+import { ModalAlert, InputBasic } from "@/components";
+import { ZodType } from "zod";
 
-export default function AuthLoginScreen() {
+const registerSteps: ZodType<any>[] = [
+  registerStepOne,
+  registerStepTwo,
+  registerStepThree,
+];
+
+export default function AuthRegisterScreen() {
   // Passos do registro
   const [step, setStep] = useState(1);
 
-  // Modal
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState("");
-  const [typeMessage, setTypeMessage] = useState("");
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    trigger,
+    getValues,
+  } = useForm({
+    resolver: zodResolver(registerSteps[step - 1]),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      userType: "",
+      phone: "",
+      birthDate: "",
+      password: "",
+      confirmPassword: "",
+    },
+    mode: "onBlur",
+  });
 
-  // Dados do usuário
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [userType, setUserType] = useState("");
-  const [phone, setPhone] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  // Funções de validação
-  const isValidEmail = (email: string): boolean =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const isValidPhone = (phone: string): boolean =>
-    /^\(\d{2}\) \d{5}-\d{4}$/.test(phone);
-  const isValidDate = (date: string): boolean =>
-    /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/.test(date);
-
-  // Função para avançar para o próximo passo
-  const handleNextStep = () => {
-    let error = "";
-
-    if (step === 1) {
-      if (!firstName || !lastName || !email) {
-        error = "All fields are required.";
-      } else if (!isValidEmail(email)) {
-        error = "Invalid email format.";
-      }
-    } else if (step === 2) {
-      if (!userType || !phone || !birthDate) {
-        error = "All fields are required.";
-      } else if (!isValidPhone(phone)) {
-        error = "Invalid phone number format.";
-      } else if (!isValidDate(birthDate)) {
-        error = "Invalid date format.";
-      }
-    } else if (step === 3) {
-      if (!password || !confirmPassword) {
-        error = "All fields are required.";
-      } else if (password !== confirmPassword) {
-        error = "Passwords do not match.";
-      }
-    }
-
-    if (error) {
-      setModalMessage(error);
-      setModalVisible(true);
-      return;
-    }
-
-    setStep(step + 1);
-  };
-
-  // Função de registro
-  const handleRegister = async () => {
-    let error = "";
-
-    if (password !== confirmPassword) {
-      error = "Passwords do not match.";
-      setModalMessage(error);
-      setModalVisible(true);
-      return;
-    }
-
-    try {
-      const response = await api.post("/users/register", {
-        firstName,
-        lastName,
-        email,
-        userType,
-        phone,
-        birthDate,
-        password,
-      });
-
-      if (response.status === 201) {
-        setModalMessage("Registration successful!");
-        setTypeMessage("success");
-        setModalVisible(true);
-        setStep(1); // Redireciona para o primeiro passo ou tela de login
-      }
-    } catch (error: any) {
-      console.error("Registration error:", error); // Adicione este log para depuração
-      setTypeMessage("error");
-      setModalMessage(
-        error.response?.data?.message || "Error during registration."
-      );
-      setModalVisible(true);
+  const nextStep = async () => {
+    const isValid = await trigger();
+    if (isValid) {
+      setStep(step + 1);
     }
   };
+
+  const onSubmit = (data: any) => console.log("Dados Finais:", data);
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
@@ -127,35 +75,65 @@ export default function AuthLoginScreen() {
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
-                <InputBasic
-                  labelText="First Name"
-                  placeholderText="Enter your first name..."
-                  typeInput="default"
-                  iconName="user"
-                  value={firstName}
-                  onChangeText={setFirstName}
+                <Controller
+                  control={control}
+                  name="firstName"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="First Name"
+                      placeholderText="Enter your first name..."
+                      typeInput="default"
+                      iconName="user"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
-                <InputBasic
-                  labelText="Last Name"
-                  placeholderText="Enter your last name..."
-                  typeInput="default"
-                  iconName="user"
-                  value={lastName}
-                  onChangeText={setLastName}
+                <Controller
+                  control={control}
+                  name="lastName"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Last Name"
+                      placeholderText="Enter your last name..."
+                      typeInput="default"
+                      iconName="user"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
-                <InputBasic
-                  labelText="Email"
-                  placeholderText="Enter your email..."
-                  typeInput="email"
-                  iconName="envelope"
-                  value={email}
-                  onChangeText={setEmail}
+                <Controller
+                  control={control}
+                  name="email"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Email"
+                      placeholderText="Enter your email..."
+                      typeInput="email"
+                      iconName="envelope"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
               </View>
-              <TouchableOpacity
-                onPress={handleNextStep}
-                style={styles.buttonDefault}
-              >
+              <TouchableOpacity onPress={nextStep} style={styles.buttonDefault}>
                 <Text>Next</Text>
               </TouchableOpacity>
             </View>
@@ -163,42 +141,72 @@ export default function AuthLoginScreen() {
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
-                <InputBasic
-                  labelText="Type User"
-                  placeholderText="Enter your user type..."
-                  typeInput="default"
-                  iconName="bars"
-                  value={userType}
-                  onChangeText={setUserType}
+                <Controller
+                  control={control}
+                  name="userType"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Type User"
+                      placeholderText="Enter your user type..."
+                      typeInput="default"
+                      iconName="bars"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
-                <InputBasic
-                  labelText="Phone Number"
-                  placeholderText="Enter your phone number..."
-                  typeInput="phone"
-                  iconName="phone"
-                  value={phone}
-                  onChangeText={setPhone}
+                <Controller
+                  control={control}
+                  name="phone"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Phone Number"
+                      placeholderText="Enter your phone number..."
+                      typeInput="phone"
+                      iconName="phone"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
-                <InputBasic
-                  labelText="Birth Date"
-                  placeholderText="Enter your birth date..."
-                  typeInput="date"
-                  iconName="calendar"
-                  value={birthDate}
-                  onChangeText={setBirthDate}
+                <Controller
+                  control={control}
+                  name="birthDate"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Birth Date"
+                      placeholderText="Enter your birth date..."
+                      typeInput="date"
+                      iconName="calendar"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
               </View>
               <View style={styles.containerButton}>
                 <TouchableOpacity
-                  onPress={() => setStep(1)}
+                  onPress={() => setStep(step - 1)}
                   style={styles.buttonBack}
                 >
                   <Text>Back</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleNextStep}
-                  style={styles.buttonNext}
-                >
+                <TouchableOpacity onPress={nextStep} style={styles.buttonNext}>
                   <Text>Next</Text>
                 </TouchableOpacity>
               </View>
@@ -207,32 +215,54 @@ export default function AuthLoginScreen() {
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
-                <InputBasic
-                  labelText="Password"
-                  placeholderText="Enter your password..."
-                  typeInput="password"
-                  iconName="lock"
-                  value={password}
-                  onChangeText={setPassword}
+                <Controller
+                  control={control}
+                  name="password"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Password"
+                      placeholderText="Enter your password..."
+                      typeInput="password"
+                      iconName="lock"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
-                <InputBasic
-                  labelText="Confirm Password"
-                  placeholderText="Confirm your password..."
-                  typeInput="password"
-                  iconName="lock"
-                  value={confirmPassword}
-                  onChangeText={setConfirmPassword}
+                <Controller
+                  control={control}
+                  name="confirmPassword"
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error },
+                  }) => (
+                    <InputBasic
+                      labelText="Confirm Password"
+                      placeholderText="Confirm your password..."
+                      typeInput="password"
+                      iconName="lock"
+                      value={value}
+                      onChangeText={(text) => onChange(text)}
+                      onBlur={onBlur}
+                      error={error?.message}
+                    />
+                  )}
                 />
               </View>
               <View style={styles.containerButton}>
                 <TouchableOpacity
-                  onPress={() => setStep(2)}
+                  onPress={() => setStep(step - 1)}
                   style={styles.buttonBack}
                 >
                   <Text>Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={handleRegister}
+                  onPress={handleSubmit(onSubmit)}
                   style={styles.buttonConfirm}
                 >
                   <Text style={{ color: "#FFFFFF" }}>Register</Text>
@@ -244,12 +274,6 @@ export default function AuthLoginScreen() {
           )}
         </ScrollView>
       </KeyboardAvoidingView>
-      <ModalAlert
-        modalMessage={modalMessage}
-        visible={modalVisible}
-        onClose={() => setModalVisible(!modalVisible)}
-        typeMessage={typeMessage}
-      />
     </SafeAreaView>
   );
 }
