@@ -1,4 +1,3 @@
-// InputBasic.tsx
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useState } from "react";
 import {
@@ -15,7 +14,9 @@ interface InputBasicProps {
   placeholderText: string;
   iconName: string;
   onChangeText: (text: string) => void;
+  onBlur: () => void;
   value: string;
+  error?: string;
 }
 
 export default function InputBasic({
@@ -24,66 +25,49 @@ export default function InputBasic({
   placeholderText,
   iconName,
   onChangeText,
+  onBlur,
   value,
+  error,
 }: InputBasicProps) {
   const [shownPassword, setShownPassword] = useState(true);
 
-  const formatInput = (text: string) => {
-    let formattedText = text;
-
-    if (typeInput === "phone") {
-      formattedText = text
-        .replace(/\D/g, "")
-        .replace(/^(\d{2})(\d)/g, "($1) $2")
-        .replace(/(\d{5})(\d)/, "$1-$2")
-        .slice(0, 15);
-
-      const phoneRegex = /^\(\d{2}\) \d{5}-\d{4}$/;
-      if (!phoneRegex.test(formattedText) && formattedText.length === 15)
-        return;
-    } else if (typeInput === "date") {
-      formattedText = text
-        .replace(/\D/g, "")
-        .replace(/(\d{2})(\d)/, "$1/$2")
-        .replace(/(\d{2})(\d)/, "$1/$2")
-        .slice(0, 10);
-
-      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/(\d{4})$/;
-      if (!dateRegex.test(formattedText) && formattedText.length === 10) return;
-    } else if (typeInput === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    }
-
-    onChangeText(formattedText);
-  };
-
   return (
     <View style={styles.containerInput}>
+      {/* Label do input */}
       <Text style={styles.labelInput}>{labelText}</Text>
-      <View style={styles.inputContainer}>
+
+      {/* Campo de input */}
+      <View
+        style={[
+          styles.inputContainer,
+          { borderColor: error ? "red" : "#7e7e7e" },
+        ]}
+      >
         <FontAwesome
           name={iconName}
           size={20}
           color="#7e7e7e"
           style={styles.icon}
         />
+
         <TextInput
-          style={[styles.input]}
+          style={styles.input}
           placeholder={placeholderText}
           placeholderTextColor="#7e7e7e"
           secureTextEntry={typeInput === "password" ? shownPassword : false}
           keyboardType={
             typeInput === "email"
               ? "email-address"
-              : typeInput === "phone"
-              ? "phone-pad"
-              : typeInput === "date"
+              : typeInput === "phone" || typeInput === "date"
               ? "numeric"
               : "default"
           }
-          onChangeText={formatInput}
+          onChangeText={onChangeText}
+          onBlur={onBlur}
           value={value}
         />
+
+        {/* Botão para mostrar/ocultar senha */}
         {typeInput === "password" && (
           <TouchableOpacity
             onPress={() => setShownPassword(!shownPassword)}
@@ -97,6 +81,9 @@ export default function InputBasic({
           </TouchableOpacity>
         )}
       </View>
+
+      {/* Exibição do erro */}
+      {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
 }
@@ -117,6 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#18181b",
     borderRadius: 8,
     paddingHorizontal: 15,
+    borderWidth: 1,
   },
   input: {
     flex: 1,
@@ -129,5 +117,11 @@ const styles = StyleSheet.create({
   },
   eyeIcon: {
     padding: 10,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
+    marginLeft: 8,
+    marginTop: 3,
   },
 });
