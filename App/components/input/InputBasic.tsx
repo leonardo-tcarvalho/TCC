@@ -33,14 +33,11 @@ export default function InputBasic({
 
   return (
     <View style={styles.containerInput}>
-      {/* Label do input */}
       <Text style={styles.labelInput}>{labelText}</Text>
-
-      {/* Campo de input */}
       <View
         style={[
           styles.inputContainer,
-          { borderColor: error ? "red" : "#7e7e7e" },
+          { borderColor: error ? "red" : "transparent" },
         ]}
       >
         <FontAwesome
@@ -67,7 +64,6 @@ export default function InputBasic({
           value={value}
         />
 
-        {/* Botão para mostrar/ocultar senha */}
         {typeInput === "password" && (
           <TouchableOpacity
             onPress={() => setShownPassword(!shownPassword)}
@@ -82,7 +78,6 @@ export default function InputBasic({
         )}
       </View>
 
-      {/* Exibição do erro */}
       {error && <Text style={styles.errorText}>{error}</Text>}
     </View>
   );
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
     gap: 7,
   },
   labelInput: {
-    marginLeft: 8,
+    marginLeft: 3,
     fontSize: 14,
     color: "#ffffff",
   },
@@ -121,7 +116,6 @@ const styles = StyleSheet.create({
   errorText: {
     color: "red",
     fontSize: 12,
-    marginLeft: 8,
-    marginTop: 3,
+    marginLeft: 3,
   },
 });
