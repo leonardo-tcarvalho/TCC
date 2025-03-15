@@ -1,4 +1,4 @@
-const { createUser, findUserByEmail } = require('../models/userModel');
+const { createUser, findUserByEmail, findUserData } = require('../models/userModel');
 const { hashPassword, comparePassword } = require('../utils/hash')
 const jwt = require('jsonwebtoken');
 
@@ -46,4 +46,15 @@ async function login(req, res) {
     }
 }
 
-module.exports = { register, login };
+async function getMe(req, res) {
+    try {
+        const { userId } = req.body;
+        const user = await findUserData(userId);
+        res.json({ userId: user.userId });
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar usuário', error });
+    }
+}
+
+module.exports = { register, login, getMe };

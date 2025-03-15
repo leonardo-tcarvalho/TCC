@@ -58,4 +58,20 @@ async function findUserByEmail(email) {
     }
 }
 
-module.exports = { createUser, findUserByEmail };
+async function findUserData(userId) {
+    try {
+        const pool = await sql.connect();
+        const result = await pool.request()
+            .input('userId', sql.Int, userId)
+            .query(`
+                SELECT * 
+                FROM UserProfile 
+                WHERE userId = @userId
+            `);
+        return result.recordset[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
+module.exports = { createUser, findUserByEmail, findUserData };
