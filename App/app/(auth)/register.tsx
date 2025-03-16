@@ -17,54 +17,108 @@ import {
   registerStepThree,
 } from "@/validations/registerSchema";
 import { ModalAlert, InputBasic } from "@/components";
-import { ZodType } from "zod";
+import { z } from "zod";
 import api from "@/services/api";
 
-const registerSteps: ZodType<any>[] = [
-  registerStepOne,
-  registerStepTwo,
-  registerStepThree,
-];
+type StepOne = {
+  firstName: string;
+  lastName: string;
+  email: string;
+};
+
+type StepTwo = {
+  userType: string;
+  birthDate: string;
+  phone: string;
+};
+
+type StepThree = {
+  password: string;
+  confirmPassword: string;
+};
 
 export default function AuthRegisterScreen() {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(0);
 
-  const { control, handleSubmit, trigger } = useForm({
-    resolver: zodResolver(registerSteps[step - 1]),
+  const formStepOne = useForm<StepOne>({
+    resolver: zodResolver(registerStepOne),
+    mode: "onBlur",
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
+    },
+  });
+
+  const formStepTwo = useForm<StepTwo>({
+    resolver: zodResolver(registerStepTwo),
+    mode: "onBlur",
+    defaultValues: {
       userType: "",
       phone: "",
       birthDate: "",
+    },
+  });
+
+  const formStepThree = useForm<StepThree>({
+    resolver: zodResolver(registerStepThree),
+    mode: "onBlur",
+    defaultValues: {
       password: "",
       confirmPassword: "",
     },
-    mode: "onBlur",
   });
 
   const nextStep = async () => {
-    const isValid = await trigger();
+    let isValid = false;
+
+    if (step === 0) {
+      isValid = await formStepOne.trigger();
+    } else if (step === 1) {
+      isValid = await formStepTwo.trigger();
+    } else if (step === 2) {
+      isValid = await formStepThree.trigger();
+    }
+
     if (isValid) {
-      setStep(step + 1);
+      setStep((prev) => prev + 1);
     }
   };
+
+  const prevStep = () => setStep((prev) => prev - 1);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [modalType, setModalType] = useState("");
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async () => {
+    const stepOneData = formStepOne.getValues();
+    const stepTwoData = formStepTwo.getValues();
+    const stepThreeData = formStepThree.getValues();
+    console.log(stepOneData, stepTwoData, stepThreeData);
+
+    const finalData = {
+      ...stepOneData,
+      ...stepTwoData,
+      ...stepThreeData,
+    };
+
     try {
-      const response = await api.post("/users/login", data);
+      const response = await api.post("/users/register", finalData);
+      console.log(response.data);
       setModalMessage("Success");
       setModalType("success");
       setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 1000);
     } catch (error) {
-      setModalMessage("Error");
+      setModalMessage(`${error.response.data.message}`);
       setModalType("error");
       setModalVisible(true);
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 2000);
     }
   };
 
@@ -80,12 +134,12 @@ export default function AuthRegisterScreen() {
           contentContainerStyle={styles.scrollView}
           keyboardShouldPersistTaps="handled"
         >
-          {step === 1 ? (
+          {step === 0 && (
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
                 <Controller
-                  control={control}
+                  control={formStepOne.control}
                   name="firstName"
                   render={({
                     field: { onChange, onBlur, value },
@@ -104,7 +158,7 @@ export default function AuthRegisterScreen() {
                   )}
                 />
                 <Controller
-                  control={control}
+                  control={formStepOne.control}
                   name="lastName"
                   render={({
                     field: { onChange, onBlur, value },
@@ -123,7 +177,7 @@ export default function AuthRegisterScreen() {
                   )}
                 />
                 <Controller
-                  control={control}
+                  control={formStepOne.control}
                   name="email"
                   render={({
                     field: { onChange, onBlur, value },
@@ -146,12 +200,13 @@ export default function AuthRegisterScreen() {
                 <Text>Next</Text>
               </TouchableOpacity>
             </View>
-          ) : step === 2 ? (
+          )}
+          {step === 1 && (
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
                 <Controller
-                  control={control}
+                  control={formStepTwo.control}
                   name="userType"
                   render={({
                     field: { onChange, onBlur, value },
@@ -170,7 +225,7 @@ export default function AuthRegisterScreen() {
                   )}
                 />
                 <Controller
-                  control={control}
+                  control={formStepTwo.control}
                   name="phone"
                   render={({
                     field: { onChange, onBlur, value },
@@ -189,7 +244,7 @@ export default function AuthRegisterScreen() {
                   )}
                 />
                 <Controller
-                  control={control}
+                  control={formStepTwo.control}
                   name="birthDate"
                   render={({
                     field: { onChange, onBlur, value },
@@ -209,10 +264,7 @@ export default function AuthRegisterScreen() {
                 />
               </View>
               <View style={styles.containerButton}>
-                <TouchableOpacity
-                  onPress={() => setStep(step - 1)}
-                  style={styles.buttonBack}
-                >
+                <TouchableOpacity onPress={prevStep} style={styles.buttonBack}>
                   <Text>Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={nextStep} style={styles.buttonNext}>
@@ -220,12 +272,13 @@ export default function AuthRegisterScreen() {
                 </TouchableOpacity>
               </View>
             </View>
-          ) : step === 3 ? (
+          )}
+          {step === 2 && (
             <View style={styles.containerLogin}>
               <View style={styles.containerInput}>
                 <Text style={styles.textTitle}>Register</Text>
                 <Controller
-                  control={control}
+                  control={formStepThree.control}
                   name="password"
                   render={({
                     field: { onChange, onBlur, value },
@@ -244,7 +297,7 @@ export default function AuthRegisterScreen() {
                   )}
                 />
                 <Controller
-                  control={control}
+                  control={formStepThree.control}
                   name="confirmPassword"
                   render={({
                     field: { onChange, onBlur, value },
@@ -264,22 +317,17 @@ export default function AuthRegisterScreen() {
                 />
               </View>
               <View style={styles.containerButton}>
-                <TouchableOpacity
-                  onPress={() => setStep(step - 1)}
-                  style={styles.buttonBack}
-                >
+                <TouchableOpacity onPress={prevStep} style={styles.buttonBack}>
                   <Text>Back</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={handleSubmit(onSubmit)}
+                  onPress={formStepThree.handleSubmit(onSubmit)}
                   style={styles.buttonConfirm}
                 >
                   <Text style={{ color: "#FFFFFF" }}>Register</Text>
                 </TouchableOpacity>
               </View>
             </View>
-          ) : (
-            <Text style={{ color: "white" }}>Not Found</Text>
           )}
         </ScrollView>
       </KeyboardAvoidingView>
