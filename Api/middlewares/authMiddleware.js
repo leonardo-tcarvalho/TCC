@@ -10,7 +10,6 @@ function authMiddleware(req, res, next) {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    console.log("Token received:", token);
 
     try {
         const decoded = jwt.verify(token, JWT_SECRET);
