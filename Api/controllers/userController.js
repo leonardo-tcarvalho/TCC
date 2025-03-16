@@ -9,6 +9,7 @@ async function register(req, res) {
         const { firstName, lastName, email, userType, phone, birthDate, password } = req.body;
 
         const existingUser = await findUserByEmail(email);
+
         if (existingUser) {
             return res.status(400).json({ message: 'E-mail já cadastrado' });
         }

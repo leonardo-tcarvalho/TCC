@@ -95,11 +95,17 @@ export default function AuthRegisterScreen() {
     const stepOneData = formStepOne.getValues();
     const stepTwoData = formStepTwo.getValues();
     const stepThreeData = formStepThree.getValues();
-    console.log(stepOneData, stepTwoData, stepThreeData);
+
+    // Format birthDate to YYYY-MM-DD
+    const formattedBirthDate = stepTwoData.birthDate
+      .split("/")
+      .reverse()
+      .join("-");
 
     const finalData = {
       ...stepOneData,
       ...stepTwoData,
+      birthDate: formattedBirthDate,
       ...stepThreeData,
     };
 
