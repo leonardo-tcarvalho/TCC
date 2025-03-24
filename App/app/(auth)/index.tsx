@@ -48,7 +48,7 @@ export default function AuthLoginScreen() {
       await login(response.data.token);
       setTimeout(() => {
         setModalVisible(false);
-        router.push("/(tabs)");
+        router.replace("/(tabs)");
       }, 1000);
     } catch (error) {
       setModalMessage("Usuário ou senha inválidos!");
