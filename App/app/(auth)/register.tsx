@@ -96,7 +96,6 @@ export default function AuthRegisterScreen() {
     const stepTwoData = formStepTwo.getValues();
     const stepThreeData = formStepThree.getValues();
 
-    // Format birthDate to YYYY-MM-DD
     const formattedBirthDate = stepTwoData.birthDate
       .split("/")
       .reverse()
